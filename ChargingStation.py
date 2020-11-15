@@ -46,13 +46,6 @@ class ChargingStation():
         """
         Return the close status change from open to closed vice versa.
         """        
-
-
-        """
-        User enter : start_time :2020-05-20 09:00, end_time : 2020-05-20 15:00 
-            TODO: An exception is created for this charger and when user ask whether it is open or not check here first then check the open_close part.    
-                If there is no exception in the charging station check the store if not check the talent exception if not than use the store time table.
-        """
     def check_exception(self):
         if self.exception:
             return self.exception
