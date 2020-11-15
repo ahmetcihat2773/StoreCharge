@@ -2,7 +2,7 @@ from Store import Store
 class Tenant():
     def __init__(self):
         print("Tenant Created")  
-        self.exception = []
+        self.exception = {}
         self.stores = {}
         self.define_store(0,3)
         self.define_store(1,3)
