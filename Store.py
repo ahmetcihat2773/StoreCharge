@@ -21,11 +21,8 @@ class Store():
         self.store_hours["Sunday"] = self.random_time(random.randint(1,3))
         self.charger = {}
         self.exception = {}
-        for i in range(self.charger_number):
-            if i not in self.charger.keys() and i==0:
-                self.charger[i] = ChargingStation("privat",self.store_hours,self.tenant_exception,self.exception)
-            else:
-                self.charger[i] = ChargingStation("custom",self.store_hours,self.tenant_exception,self.exception)
+        for i in range(self.charger_number):            
+            self.charger[i] = ChargingStation(self.store_hours,self.tenant_exception,self.exception)
         
     def random_time(self,num_daysplit):    
         hour = 0

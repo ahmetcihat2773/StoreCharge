@@ -6,6 +6,15 @@ class main():
     def __init__(self):
         print("MAIN is started")
         self.tenants = {}
+    def get_ids(self):
+        print("Enter the Tenant ID")
+        tenant_id = int(input())
+        print("Enter the Store ID")
+        store_id = int(input())
+        print("Enter the Charger ID")
+        charger_id = int(input())
+        print("Enter the Timesamp")
+        return tenant_id,store_id,charger_id
     def app_loop(self):
         #self.create_exception_file()    
         self.register_tenant()
@@ -20,23 +29,23 @@ class main():
             if x == 0:
                 break
             elif x == 1:
-                print("Enter the Tenant ID")
-                tenant_id = input()
-                print("Enter the Store ID")
-                store_id = int(input())
-                print("Enter the Charger ID")
-                charger_id = int(input())
+                self.read_exceptions()
+                tenant_id,store_id,charger_id = self.get_ids()
                 print("Enter the Timesamp")
                 time_stamp = int(input())
-                self.tenants[tenant_id].stores[store_id].charger[charger_id].check_open_closed(time_stamp)
+                print(time_stamp)
+                result = self.tenants[tenant_id].stores[store_id].charger[charger_id].check_open_closed(time_stamp)
+                if result:
+                    print("OPEN")
+                else:
+                    print("CLOSED")
             elif x == 2:
-                print("Enter the Tenant ID")
-                self.tenant_id = int(input())
-                print("Enter the Store ID")
-                self.store_id = int(input())
-                #Ask here the Store Id
-                print(self.tenants[self.tenant_id].stores)
-                self.tenants[self.tenant_id].stores[self.store_id].define_exception()
+                self.read_exceptions()
+                tenant_id,store_id,charger_id = self.get_ids()
+                print("Enter the Timesamp")
+                time_stamp = int(input())
+                result = self.tenants[tenant_id].stores[store_id].charger[charger_id].closes_open_close(time_stamp)
+
             elif x == 3:
                 self.read_exceptions()
                 print("Enter Tenant ID")
@@ -51,12 +60,7 @@ class main():
                 self.show_entities(tenant_id,store_id,False)
             elif x == 5 :
                 self.read_exceptions()
-                print("Enter Tenant ID")
-                tenant_id = int(input())
-                print("Enter Store ID")
-                store_id = int(input())
-                print("Enter Charger ID")
-                charger_id = int(input()) 
+                tenant_id,store_id,charger_id = self.get_ids()
                 self.show_entities(tenant_id,store_id,charger_id)    
             elif x==6:
                 print("Enter Tanent ID\nThese are the tanent IDs")
