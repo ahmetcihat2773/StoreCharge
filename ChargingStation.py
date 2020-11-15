@@ -11,25 +11,18 @@ class ChargingStation():
         self.store_exception = store_exception
         self.store_hours = store_hours
         self.charger_type = charger_type
-        self.exception = []
-    def open_close(self,timeStamp):
+        self.exception ={}
+    def check_open_closed(self,timeStamp):
         """
         Check whether the station is open within this period of time
         """
-        day_number = timeStamp.weekday()
+        dateTime = datetime.fromtimestamp(timeStamp)
+        day_number = dateTime.weekday()
         day_name = calendar.day_name[day_number]
-        hour = timeStamp.hour
-        minute = timeStamp.minute
-        open_close_time = self.conver2time(self.store_hours[day_name])
+        hour = dateTime.hour
+        minute = dateTime.minute
         print("week day",day_name)
-        for times in open_close_time: 
-            print(times)          
-            if (hour >= times[0].hour and minute >= times[0].minute) and (hour <= times[1].hour):
-                return True
-            elif (hour >= times[0].hour and minute >= times[0].minute) and (hour == times[0].hour and minute < times[0].minute):
-                return True    
-        return False
-        
+
     def conver2time(self,string_time):
         """
         Convert string to hour and minute
@@ -46,6 +39,11 @@ class ChargingStation():
         """
         Return the close status change from open to closed vice versa.
         """        
+
+
+        """
+
+        """
     def check_exception(self):
         if self.exception:
             return self.exception
