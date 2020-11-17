@@ -17,9 +17,7 @@ class main():
     def app_loop(self):
         #self.create_exception_file()    
         self.register_tenant()
-        print("Tenants: ",self.tenants)
         self.register_tenant()
-        print("Tenants: ",self.tenants)
         self.read_exceptions()
         while True:
             print("Press 1 Ask a charger is closed or not","\nPress 2 Learn the closest opening and closing time")

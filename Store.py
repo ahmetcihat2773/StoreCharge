@@ -6,10 +6,8 @@ class Store():
         """
         Chargers needs to work at the same time with the store opening hours.
         """
-        print("Store STARTED")
         self.tenant_exception = tenantException
         self.charger_number = charger_number
-        self.days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         # Working hours of store
         self.store_hours = {}
         self.store_hours["Monday"] = self.random_time(random.randint(1,3)) 
@@ -23,7 +21,7 @@ class Store():
         self.exception = {}
         for i in range(self.charger_number):            
             self.charger[i] = ChargingStation(self.store_hours,self.tenant_exception,self.exception)
-        
+            
     def random_time(self,num_daysplit):    
         hour = 0
         minute = 0

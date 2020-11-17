@@ -6,7 +6,6 @@ class ChargingStation():
         """
         charger can be used public or privat for the managers.
         """
-        print("CharcingStation is Initialized")
         self.tenant_exception = tenant_exception
         self.store_exception = store_exception
         self.store_hours = store_hours
