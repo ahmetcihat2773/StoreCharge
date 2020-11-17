@@ -24,17 +24,17 @@ class ChargingStation():
         day_number = dateTime.weekday()
         day_name = calendar.day_name[day_number]
         hour_only = dateTime.time()
-        print("week day",day_name)
+        print("WEEK DAY:",day_name)
         if bool(self.exception):
-            print("Charger Exception")
+            print("EXCEPTION TYPE: Charger")
             print(self.exception)
             result = self.exception_checker(self.exception,dateTime)
         elif bool(self.store_exception):
-            print("Store Exception")
+            print("EXCEPTION TYPE: Store")
             print(self.store_exception)
             result = self.exception_checker(self.store_exception,dateTime)
         elif bool(self.tenant_exception):
-            print("Tenant Exception")
+            print("EXCEPTION TYPE: Tenant")
             print(self.tenant_exception)
             print(self.exception_checker(self.tenant_exception,dateTime))
             result = self.exception_checker(self.tenant_exception,dateTime)    
@@ -44,7 +44,6 @@ class ChargingStation():
             return False
         elif result =="out_of_range":
             # Look at the normal time
-            print(self.store_hours)
             print("WORKING HOURS ON "+day_name,self.store_hours[day_name])
             time_only = dateTime.time()
             for working_pair in self.store_hours[day_name]:
@@ -68,12 +67,12 @@ class ChargingStation():
         convert timestamp into datetime.
         check if there is a exception.
         """
-        print("Timestamp",timeStamp)
         dateTime = datetime.fromtimestamp(timeStamp)
-        print("Datetime",dateTime)
         day_number = dateTime.weekday()
         day_name = calendar.day_name[day_number]
+        print("DATETIME",dateTime)
         print("week day",day_name)
+        print("WORKING HOURS",self.store_hours[day_name])
         if bool(self.exception):
             print("Charger Exception")
             print(self.exception)
@@ -126,41 +125,3 @@ class ChargingStation():
         day_number += 1 
         dateTime_date += timedelta(days=1)
         return datetime.combine(dateTime_date,self.store_hours[day_name][0][0])
-    def exception_working_hour_checker(self,exception,working_hour):
-        # working_hour : list of time
-        # exception is a dictionary : "start","end","type" keys.
-        year = exception.year
-        month = exception.month
-        day = exception.day
-        date = year+"/"+month+"/"+day
-        print(self.store_hours[day_name])
-        working_time = working_pair.strftime("%H:%M:%S")
-        working_date = datetime.strptime(date+" "+working_time,"%Y/%m/%d %H:%M:%S")
-        print(working_date)
-        """
-        for working_pair in self.store_hours[day_name]:
-            # Working time : 7.30 - 12.35,  Looking for 7.25
-            working_time = working_pair.strftime("%H:%M:%S")
-            working_date = datetime.strptime(date+" "+working_time,"%Y/%m/%d %H:%M:%S")
-            if exception["end"] - working_date >0:
-
-                return True
-        return False
-        """
-    def where_is_datetime(self,exception,dateTime):
-        """
-        return if the dateTime time is lower than exception start, or in the middle of the exception or after end of exception
-        """
-        if dateTime < exception["start"]:
-            return "left"
-        elif exception["start"] <= dateTime and dateTime < exception["end"]:
-            return "middle"
-        elif dateTime > exception["end"]:
-            return "right"
-    def nextday_name(self,day_number):
-        """
-        returns a list of working hours of the store for a spe
-        """
-        day_number += 1
-        day_name = calendar.day_name[day_number]
-        return day_name 

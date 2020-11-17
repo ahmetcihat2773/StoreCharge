@@ -50,19 +50,3 @@ class Store():
         return time_list
 
 
-    def define_exception(self):
-        temp_excep = self.charger[0].define_exception()
-        self.exception.append(temp_excep)
-        
-        """
-        For all charge station define an exception if charger does not have it before. Otherwise leave it and continue with other chargers.
-        """    
-        print(self.exception)
-    def check_exception(self,charger_id):
-        exception = self.charger[charger_id].exception
-        if not exception:
-            return exception
-        else:
-            return self.exception 
-
-

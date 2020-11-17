@@ -18,11 +18,4 @@ class Tenant():
         else:
             self.exception.append([start_time,end_time,open_or_close])
 
-#{"Monday":list(),"Tuesday":list(),"Wednesday":list(),"Thursday":list(),"Friday":list(),"Saturday":list(),"Sunday":list()}
-    def check_exception(self,store_id,charger_id):
-        exception = self.stores[store_id].check_exception(charger_id)
-        if not exception:
-            return exception
-        else:
-            return self.exception
         

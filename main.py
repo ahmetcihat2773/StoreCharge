@@ -13,7 +13,6 @@ class main():
         store_id = int(input())
         print("Enter the Charger ID")
         charger_id = int(input())
-        print("Enter the Timesamp")
         return tenant_id,store_id,charger_id
     def app_loop(self):
         #self.create_exception_file()    
@@ -31,9 +30,9 @@ class main():
             elif x == 1:
                 self.read_exceptions()
                 tenant_id,store_id,charger_id = self.get_ids()
-                print("Enter the Timesamp")
+                print("Enter the Timestamp")
                 time_stamp = int(input())
-                print(time_stamp)
+                print("TIME STAMP:",time_stamp)
                 result = self.tenants[tenant_id].stores[store_id].charger[charger_id].check_open_closed(time_stamp)
                 if result:
                     print("OPEN")
@@ -42,12 +41,11 @@ class main():
             elif x == 2:
                 self.read_exceptions()
                 tenant_id,store_id,charger_id = self.get_ids()
-                print("Enter the Timesamp")
+                print("Enter the Timestamp")
                 time_stamp = int(input())
                 result = self.tenants[tenant_id].stores[store_id].charger[charger_id].soonest_open_close(time_stamp)
-                print(result)
-                print(datetime.fromtimestamp(result))
-
+                print("TIME STAMP:",result)
+                print("DATE TIME:",datetime.fromtimestamp(result))
             elif x == 3:
                 self.read_exceptions()
                 print("Enter Tenant ID")
@@ -84,14 +82,6 @@ class main():
             self.tenants[max(list(self.tenants.keys()))+1] = Tenant()
         else: 
             self.tenants[0] = Tenant()
-    def check_exception_time(self,check_time,exception):
-        print(exception)
-        if exception[0][0] <= check_time <= exception[0][1] and exception[0][2] == "Open":
-            print("Open")
-            return True
-        else:
-            return False
-        #self.exception.append([start_time,end_time,open_or_close])
     def read_exceptions(self):
         with open('exception_file.csv') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
@@ -129,8 +119,6 @@ class main():
         elif type(tenant_id) == int and not type(store_id) == int:
             print("TENANT ID: ",tenant_id)
             print("TENANT EXCEPTION: ",self.tenants[tenant_id].exception)
-
-
     
     def create_exception_file(self):
         with open('exception_file.csv', mode='w',newline='') as exception_file:
