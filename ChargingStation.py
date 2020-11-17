@@ -1,5 +1,5 @@
 import calendar
-from datetime import datetime
+from datetime import datetime,timedelta,time
 import random
 class ChargingStation():
     def __init__(self,store_hours,tenant_exception,store_exception):
@@ -15,7 +15,8 @@ class ChargingStation():
         """
         Check whether the station is open within this period of time
         => What happen if there is no exception.
-        
+        Burda olan charger exception varsa ona bak yoksa store exception varsa ona yoksa
+        tenant a bak oda yoksa normal working hours a bakıyor.
         """
         print(timeStamp)
         dateTime = datetime.fromtimestamp(timeStamp)
@@ -62,6 +63,69 @@ class ChargingStation():
             else:
                 return "open"
         return "out_of_range" 
+    def soonest_open_close(self,timeStamp):
+        """
+        convert timestamp into datetime.
+        check if there is a exception.
+        """
+        print("Timestamp",timeStamp)
+        dateTime = datetime.fromtimestamp(timeStamp)
+        print("Datetime",dateTime)
+        day_number = dateTime.weekday()
+        day_name = calendar.day_name[day_number]
+        print("week day",day_name)
+        if bool(self.exception):
+            print("Charger Exception")
+            print(self.exception)
+            result = self.exception_time_check(self.exception,dateTime)
+            return datetime.timestamp(result)
+        elif bool(self.store_exception):
+            print("Store Exception")
+            print(self.store_exception)
+            result = self.exception_time_check(self.store_exception,dateTime)
+            return datetime.timestamp(result)
+        
+        elif bool(self.tenant_exception):
+            print("Tenant Exception")
+            print(self.tenant_exception)
+            result = self.exception_time_check(self.tenant_exception,dateTime)
+            return datetime.timestamp(result)
+        else:
+            result = self.check_working_hours(dateTime)
+            return datetime.timestamp(result)
+    def exception_time_check(self,exception_dt,dateTime):
+        """
+        return the datetime with which open/closed status changes.
+        """
+        day_number = dateTime.weekday()
+        if dateTime < exception_dt["start"] :
+            if exception_dt["type"] == "open": 
+                return exception_dt["start"]
+            else:
+                return self.check_working_hours(dateTime)  
+        elif exception_dt["start"] < dateTime and dateTime < exception_dt["end"]:
+            if exception_dt["type"] == "open":
+                return exception_dt["end"]
+            else:
+                return self.check_working_hours(dateTime)
+        else:
+            return self.check_working_hours(dateTime)
+    def check_working_hours(self,dateTime):
+        """
+        When dateTime is not inside the exception time, check the store working time.
+        """
+        day_number = dateTime.weekday()
+        day_name = calendar.day_name[day_number]
+        dateTime_date = dateTime.date()
+        dateTime_time = dateTime.time()
+        for working_pair in self.store_hours[day_name]:
+            if dateTime_time < working_pair[0]:
+                return datetime.combine(dateTime_date,working_pair[0])
+            elif working_pair[0] < dateTime_time and dateTime_time < working_pair[1]:
+                return datetime.combine(dateTime_date,working_pair[1])
+        day_number += 1 
+        dateTime_date += timedelta(days=1)
+        return datetime.combine(dateTime_date,self.store_hours[day_name][0][0])
     def exception_working_hour_checker(self,exception,working_hour):
         # working_hour : list of time
         # exception is a dictionary : "start","end","type" keys.
@@ -100,132 +164,3 @@ class ChargingStation():
         day_number += 1
         day_name = calendar.day_name[day_number]
         return day_name 
-
-
-
-
-
-    def isbetween(self,charger_exception,dateTime):
-        """
-        This function returns the datetime object soonest to the given dateTime.
-
-        """
-        dateTime_date = charger_exception["start"].date()
-        dateTime_day = dateTime.day
-        if bool(charger_exception):
-            if charger_exception["start"].date() < dateTime.date() and dateTime.date() < charger_exception["end"].date():    
-                for time_pair in self.store_hours[dateTime_day]:              
-                    time_pair[0] = datetime.combine(date)
-                    if charger_exception["start"].time() > working_pair[0] and charger_exception["end"].time() < working_pair[1]:
-                        if dateTime.hour() < time_pair[0]:
-                                return datetime.combine(dateTime_date,time_pair[0])
-                        elif dateTime.hour() > time_pair[0] and dateTime.hour() < charger_exception["start"].hour():
-                            if charger_exception["type"] == "closed":
-                                return charger_exception["start"]
-                            else:
-                                return datetime.combine(dateTime_date,time_pair[1])
-                        elif dateTime > charger_exception["start"] and dateTime < charger_exception["end"]:
-                            if charger_exception["type"] == "closed":
-                                return charger_exception["end"]
-                            else:
-                                return time_pair[1]
-                        elif dateTime > charger_exception["end"] and dateTime < time_pair[1]:
-                            if charger_exception["type"] == "closed":
-                                return time_pair[1]
-                    if charger_exception["start"].time() > working_pair[0] and charger_exception["end"].time() > working_pair[1] and  charger_exception["start"].time() < working_pair[1]:
-                        if dateTime < time_pair[0]
-            
-            """
-            
-            dateTime_place = self.where_is_datetime(charger_exception,dateTime)
-            if charger_exception["type"] == "open":                
-                if dateTime_place == "left":
-                    return charger_exception["start"]
-                elif dateTime_place = "middle":
-                    return charger_exception["end"]
-                else:
-                    day_name = self.nextday_name(dateTime.week_day())
-                    dateTime_time = dateTime.time()
-                    # compare the times first.
-                    date = dateTime.strftime("%Y/%m/%d")
-                    #dateTime = date+" "+self.store_hours[day_name][0][0].strftime("%H:%M:%S")
-                    for time_pairs in self.store_hours[day_name]:
-                        if dateTime_time < time_pairs[0]:
-                            time_only = time_pairs[0].strftime("%H:%M:%S")
-                            dateTime = date+" "+time_only
-                            return dateTime
-                        elif time_pairs[0] < dateTime_time and dateTime_time < time_pairs[1]:
-                            time_only = time_pairs[].strftime("%H:%M:%S")
-                            dateTime = date+" "+time_only
-                        elif dateTime_time > time_pairs[1]:
-                            # return the starting time of tomorrow.
-                            day_name = self.nextday_name(dateTime.week_day())
-                            date = dateTime.strftime("%Y/%m/%d")
-                            dateTime = date+" "+
-                            return dateTime
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            else:
-                if charger_exception["type"] == "closed":                
-                    if dateTime_place == "left":
-                        day_number = dateTime.week_day()
-                        day_name = calendar.day_name(day_number)
-                        self.exception_closed(dateTime,day_name)
-                    elif dateTime_place = "middle":
-                        return charger_exception["end"]
-                    else:
-                        # return the starting time of tomorrow.
-                        day_name = self.nextday_name(dateTime.week_day())
-                        date = dateTime.strftime("%Y/%m/%d")
-                        dateTime = date+" "+self.store_hours[day_name][0][0].strftime("%H:%M:%S")
-                        return dateTime
-
-
-        
-        if bool(store_exception):
-            """   
-
-
-    def soonest_open_close(self,timeStamp):
-        """
-        convert timestamp into datetime.
-        check if there is a exception.
-        """
-        print("Timestamp",timeStamp)
-        dateTime = datetime.fromtimestamp(timeStamp)
-        print("Datetime",dateTime)
-        day_number = dateTime.weekday()
-        day_name = calendar.day_name[day_number]
-        hour_only = dateTime.time()
-        print("week day",day_name)
-        if bool(self.exception):
-            print("Charger Exception")
-            print(self.exception)
-            result = self.exception_checker(self.exception,dateTime)
-            if result == "open":
-                if bool(self.store_exception):
-
-
-
-
-                elif bool(self.tenant_exception):
-
-
-                else:
-
-
-            elif result == "closed":
-                # Which day exception ends. If in that day, normal working hours are valid then check the possible
-                # opening hour. If not return the openning hour of tomorrow. 
-                if bool(self.store_exception):
-            elif result = "out_of_range":
-                result = self.exception_checker(self.store_exception,dateTime)

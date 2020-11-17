@@ -45,6 +45,8 @@ class main():
                 print("Enter the Timesamp")
                 time_stamp = int(input())
                 result = self.tenants[tenant_id].stores[store_id].charger[charger_id].soonest_open_close(time_stamp)
+                print(result)
+                print(datetime.fromtimestamp(result))
 
             elif x == 3:
                 self.read_exceptions()
